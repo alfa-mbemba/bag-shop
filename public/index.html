@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backpack Store | Premium Quality Bags</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>👑 Premium Backpack</h1>
+            <p>Durable & Stylish | Perfect for School/Work</p>
+        </header>
+
+        <div class="product-section">
+            <div class="product-image">
+                <img src="bag-image.jpg" alt="Premium Backpack">
+            </div>
+            <div class="product-details">
+                <h2>Professional Laptop Backpack</h2>
+                <div class="price">Tsh 20,000</div>
+                <ul class="features">
+                    <li>✓ Waterproof & Durable Material</li>
+                    <li>✓ 15.6-inch Laptop Compartment</li>
+                    <li>✓ Side Pocket for Water Bottle</li>
+                    <li>✓ Comfortable Padded Straps</li>
+                    <li>✓ Colors: Black, Blue, Gray</li>
+                </ul>
+                <div class="stock">✅ In Stock | Order Today!</div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>📝 Order Your Backpack</h2>
+            <p>Fill out the form below and we'll contact you within 24 hours.</p>
+            
+            <form id="interestForm">
+                <div class="form-group">
+                    <label for="name">Full Name:</label>
+                    <input type="text" id="name" name="name" required >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" required >
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" name="phone" required >
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+                </div>
+
+                <!-- NIMEONGEZA HII SEHEMU YA MESSAGE - ILIKOSEKANA! -->
+                <div class="form-group">
+                    <label for="message">Message (Optional):</label>
+                    <textarea id="message" name="message" rows="3" placeholder="Preferred color, delivery address, questions..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">💌 Submit Interest</button>
+            </form>
+            <div id="responseMessage" class="response-message"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('interestForm');
+        const responseDiv = document.getElementById('responseMessage');
+
+        // Check if elements exist
+        if (!form) {
+            console.error("Form not found!");
+        }
+        if (!responseDiv) {
+            console.error("Response div not found!");
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const quantity = document.getElementById('quantity').value;
+            const message = document.getElementById('message').value;
+            
+            // Validate required fields
+            if (!name || !email || !phone || !quantity) {
+                responseDiv.innerHTML = '❌ Please fill in all required fields!';
+                responseDiv.className = 'response-message error';
+                responseDiv.style.display = 'block';
+                return;
+            }
+            
+            const formData = {
+                name: name,
+                email: email,
+                phone: phone,
+                quantity: parseInt(quantity),
+                message: message || ''
+            };
+
+            responseDiv.innerHTML = 'Submitting...';
+            responseDiv.className = 'response-message loading';
+            responseDiv.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/submit-interest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = '✅ ' + result.message;
+                    responseDiv.className = 'response-message success';
+                    form.reset();
+                } else {
+                    responseDiv.innerHTML = '❌ Error: ' + result.message;
+                    responseDiv.className = 'response-message error';
+                }
+            } catch (error) {
+                responseDiv.innerHTML = '❌ Network error. Please try again.';
+                responseDiv.className = 'response-message error';
+                console.error('Error:', error);
+            }
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                responseDiv.style.display = 'none';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
