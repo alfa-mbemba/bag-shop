@@ -6,27 +6,21 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(express.json());
 app.use(express.static('public'));
 
-// Database connection
-const db = mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'bag_shop'
-});
+// ============ SEHEMU MUHIMU ============
+// Tumia MYSQL_URL kutoka Railway
+const db = mysql.createConnection(process.env.MYSQL_URL);
+// ========================================
 
-// Connect to database
 db.connect((err) => {
     if (err) {
-        console.error('❌ Database error:', err.message);
+        console.error('❌ Database connection failed:', err.message);
         return;
     }
     console.log('✅ Connected to MySQL database');
     
-    // Create table
     const createTable = `
         CREATE TABLE IF NOT EXISTS bag_interests (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -45,7 +39,6 @@ db.connect((err) => {
     });
 });
 
-// API endpoint
 app.post('/api/submit-interest', (req, res) => {
     const { name, email, phone, quantity, message } = req.body;
     
@@ -65,7 +58,6 @@ app.post('/api/submit-interest', (req, res) => {
     });
 });
 
-// Get all interests
 app.get('/api/interests', (req, res) => {
     db.query('SELECT * FROM bag_interests ORDER BY created_at DESC', (err, results) => {
         if (err) return res.status(500).json({ message: 'Database error' });
@@ -73,12 +65,10 @@ app.get('/api/interests', (req, res) => {
     });
 });
 
-// Serve frontend
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// MUHIMU: Tumia '0.0.0.0' kwa Railway
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
