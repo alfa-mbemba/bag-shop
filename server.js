@@ -9,14 +9,24 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('public'));
 
-// ============ SEHEMU MUHIMU ============
-// Tumia MYSQL_URL kutoka Railway
-const db = mysql.createConnection(process.env.MYSQL_URL);
-// ========================================
+// ============ SEHEMU ILIYOBADILISHWA ============
+// Tumia individual variables badala ya MYSQL_URL
+const db = mysql.createConnection({
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE || 'bag_shop',
+    port: process.env.MYSQLPORT || 3306
+});
+// ================================================
 
 db.connect((err) => {
     if (err) {
         console.error('❌ Database connection failed:', err.message);
+        console.log('📋 Check your environment variables:');
+        console.log('   MYSQLHOST:', process.env.MYSQLHOST);
+        console.log('   MYSQLUSER:', process.env.MYSQLUSER);
+        console.log('   MYSQLDATABASE:', process.env.MYSQLDATABASE);
         return;
     }
     console.log('✅ Connected to MySQL database');
@@ -42,6 +52,8 @@ db.connect((err) => {
 app.post('/api/submit-interest', (req, res) => {
     const { name, email, phone, quantity, message } = req.body;
     
+    console.log('Received data:', { name, email, phone, quantity, message });
+    
     if (!name || !email || !phone || !quantity) {
         return res.status(400).json({ message: 'Please fill all required fields' });
     }
@@ -51,8 +63,8 @@ app.post('/api/submit-interest', (req, res) => {
     
     db.query(query, [name, email, phone, quantity, message || null], (err, result) => {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Database error:', err);
+            return res.status(500).json({ message: 'Server error: ' + err.message });
         }
         res.json({ message: 'Thank you! We will contact you within 24 hours.' });
     });
