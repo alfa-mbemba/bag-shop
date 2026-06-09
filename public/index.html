@@ -38,17 +38,17 @@
             <form id="interestForm">
                 <div class="form-group">
                     <label for="name">Full Name:</label>
-                    <input type="text" id="name" name="name" required >
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email Address:</label>
-                    <input type="email" id="email" name="email" required >
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Phone Number:</label>
-                    <input type="tel" id="phone" name="phone" required >
+                    <input type="tel" id="phone" name="phone" required placeholder="+255XXXXXXXXX">
                 </div>
 
                 <div class="form-group">
@@ -56,7 +56,6 @@
                     <input type="number" id="quantity" name="quantity" min="1" value="1" required>
                 </div>
 
-                <!-- NIMEONGEZA HII SEHEMU YA MESSAGE - ILIKOSEKANA! -->
                 <div class="form-group">
                     <label for="message">Message (Optional):</label>
                     <textarea id="message" name="message" rows="3" placeholder="Preferred color, delivery address, questions..."></textarea>
@@ -66,13 +65,38 @@
             </form>
             <div id="responseMessage" class="response-message"></div>
         </div>
+
+        <!-- ============ SEHEMU MPYA YA CONTACT US ============ -->
+        <div class="contact-section">
+            <h2>📞 Contact Us</h2>
+            <div class="contact-container">
+                <div class="contact-card">
+                    <div class="contact-icon">📧</div>
+                    <h3>Email Us</h3>
+                    <p>For any questions or inquiries, send us an email</p>
+                    <a href="mailto:alfambemba3@gmail.com" class="contact-btn email-btn">
+                        ✉️ alfambemba3@gmail.com
+                    </a>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">📞</div>
+                    <h3>Call Us</h3>
+                    <p>Monday to Saturday, 8:00 AM - 6:00 PM</p>
+                    <a href="tel:+255712345678" class="contact-btn call-btn">
+                        📱 +255 773622498
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- ============ MWISHO WA CONTACT US ============ -->
+
     </div>
 
     <script>
         const form = document.getElementById('interestForm');
         const responseDiv = document.getElementById('responseMessage');
 
-        // Check if elements exist
         if (!form) {
             console.error("Form not found!");
         }
@@ -83,14 +107,12 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Get form values
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
             const quantity = document.getElementById('quantity').value;
             const message = document.getElementById('message').value;
             
-            // Validate required fields
             if (!name || !email || !phone || !quantity) {
                 responseDiv.innerHTML = '❌ Please fill in all required fields!';
                 responseDiv.className = 'response-message error';
@@ -135,7 +157,6 @@
                 console.error('Error:', error);
             }
             
-            // Hide message after 5 seconds
             setTimeout(() => {
                 responseDiv.style.display = 'none';
             }, 5000);
